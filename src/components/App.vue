@@ -30,7 +30,7 @@
       } 
     }
   }
-  
+    
   //split long messages
   var messageList = [];
   messages.forEach(message => {
@@ -46,19 +46,33 @@
   export default {
       name: 'app',
       mounted(){
-        this.simulateType(0);
+        this.doTheLoop();
+      },
+      computed: {
+        prevMsg() { 
+          if(typeof messageList[this.$data.idx - 1] === "undefined") return null;
+          return messageList[this.$data.idx - 1]; 
+        },
+        msg() { 
+          return messageList[this.$data.idx]; 
+        },
+        nextMsg() { 
+          if(typeof messageList[this.$data.idx + 1] === "undefined") return null;
+          return messageList[this.$data.idx + 1];
+         }
       },
       data() {
         return {
+          idx: 0,
           typing: "",
           participants: [
             {
-              id: 'SOPHIE',
+              id: 'me',
               name: 'Sophie',
               imageUrl: '/images/sophie.jpg'
             },
             {
-              id: 'me',
+              id: 'psychologue',
               name: 'PSYCHOLOGUE',
               imageUrl: '/images/psy.jpg'
             }/*,
@@ -69,7 +83,7 @@
             }*/
           ], // the list of all the participant of the conversation. `name` is the user name, `id` is used to establish the author of a message, `imageUrl` is supposed to be the user avatar.
           title: "Sophie Pétoncule chez le psychologue",
-          titleImageUrl: 'https://a.slack-edge.com/66f9/img/avatars-teams/ava_0001-34.png',
+          titleImageUrl: '/images/sophie.jpg',
           messageList: [],
           newMessagesCount: 0,
           isChatOpen: true, // to determine whether the chat window should be open or closed
@@ -103,17 +117,59 @@
         }
       },
       methods: {
-        sendMessage(text) {
-          if (text.length > 0) {
-            this.newMessagesCount = this.isChatOpen ? this.newMessagesCount : this.newMessagesCount + 1
-            this.onMessageWasSent({ author: 'support', type: 'text', data: { text } })
-          }
+        doTheLoop(){
+          this.getMsg()
+          //read msg
+          .then(()=> this.readMsg())
+          //type
+          .then(()=> this.typeMsg())
+          //send
+          .then(()=> this.sendMsg())
+          .then(()=> this.doTheLoop())
+          .catch(e => console.log("fin"))
         },
+        getMsg(){
+          this.messageList = [...this.messageList, new Message(this.msg)];
+          return new Promise((resolve, reject)=>{
+            resolve();
+          })
+        },
+        readMsg(){
+          var txt = this.msg.data.text;
+          if(this.nextMsg.author != "me") {
+            this.$data.showTypingIndicator = this.nextMsg.author;
+          }
+          return new Promise((resolve, reject)=>{
+            this.think(txt.length*120).then(() => {
+              this.$data.showTypingIndicator = "";
+              resolve();
+            })
+          })
+        },
+        typeMsg(){
+          this.$data.idx++;
+          if(typeof this.msg === "undefined") throw new Error("fin");
+          this.$data.typing = "";
+          
+          if(this.msg.author == "me") {
+            return this.keyboard();
+          }
+          this.$data.showTypingIndicator = this.msg.author;
+          return new Promise((resolve, reject)=> resolve());
+        },
+        sendMsg(){
+          this.$data.typing = "";
+          this.$data.showTypingIndicator = "";
+          return new Promise((resolve, reject)=>{
+            resolve();
+          })
+        },
+        
         onMessageWasSent(message) {
           // called when the user sends a message
-          this.messageList = [...this.messageList, message]
+          // this.messageList = [...this.messageList, message]
         },
-        think(delay){
+        think(delay){         
           return new Promise(function(resolve, reject){
             var tmOut;
             tmOut = window.setTimeout(function () {
@@ -121,56 +177,22 @@
             },delay);
           })
         },
-        simulateType(idxMsg){
-          if(typeof messageList[idxMsg] === "undefined") return false;
-          
-          var prevMsg = typeof messageList[idxMsg-1] !== "undefined" ? messageList[idxMsg - 1] : null;
-          var msg = messageList[idxMsg];
-          var nextMsg = typeof messageList[idxMsg+1] !== "undefined" ? messageList[idxMsg + 1] : '';
+        keyboard(){
+          var str = this.msg.data.text;
+          this.$data.showTypingIndicator = "";
 
-          //taper le message
-          this.$data.typing = "";
-          if(nextMsg.author == "SOPHIE"){
-            var chars = new String(nextMsg.data.text);
-            timeOuts.forEach(tmOut => clearInterval(tmOut))
-            
-            for (let i = 0; i < chars.length; i++) {
-              this.think(i*100).then(()=>{
-                this.$data.typing += (chars[i]);
-
-              })
-              // var tmOut = window.setTimeout(function () {
-              //   if(i == chars.length-1){
-              //     this.printMsg(prevMsg,msg,nextMsg);
-              //   }
-              //   console.log(chars[i]);
-              // }.bind(this), i*100);
-              // timeOuts.push(timeOuts);
+          return new Promise((resolve, reject) => {
+            var tick = (str, charIdx) => {
+              if (charIdx < str.length) {
+                this.$data.typing += str[charIdx];
+                return this.think(120).then(() => tick(str, charIdx + 1));
+              }
+              resolve()
             }
-          }else{
-            this.$data.showTypingIndicator = msg.author;
 
-          }
-
-          //delai selon longueur texte
-          var delay = prevMsg 
-          ? prevMsg.data.text.length 
-          : msg.data.text.length;
-          delay = delay*120;
-          
-          //afficher le message
-          this.messageList = [...this.messageList, new Message(msg)];
-
-          this.think(delay).then(()=>{
-            if (idxMsg == messageList.length-1){
-              this.$data.showTypingIndicator = '';
-              return;
-            }
-            this.simulateType(idxMsg+1);
-          })
-
-            
-        }
+            tick(str, 0);
+          });          
+        },
       }
     }
 </script>
@@ -229,4 +251,5 @@
     from {transform:rotate(0deg);}
     to {transform:rotate(360deg);}
   }
+  
 </style>
