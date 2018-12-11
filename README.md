@@ -1,6 +1,12 @@
-# sophie
+# Sophie Pétoncule Simulator
 
-> art chat bot
+> The most important breakthrough in AI since Deep Blue :)
+
+> Sophie Pétoncule est une poule d'eau, une fois de plus, elle s'est noyée dans un verre d'eau.
+
+> (In case you wonder what the hell this is about :  https://www.youtube.com/watch?v=11nQRg-f5cM)
+
+> The transcript is from *La Playade* (https://www.amazon.fr/dp/2749158923/ref=cm_sw_r_tw_dp_U_x_3beeCb25KQG4N)
 
 ## Commands
 
