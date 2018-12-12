@@ -69,12 +69,12 @@
             {
               id: 'me',
               name: 'Sophie',
-              imageUrl: '/images/sophie.jpg'
+              imageUrl: 'images/sophie.jpg'
             },
             {
               id: 'psychologue',
               name: 'PSYCHOLOGUE',
-              imageUrl: '/images/psy.jpg'
+              imageUrl: 'images/psy.jpg'
             }/*,
             {
               id: 'VOIX',
@@ -83,7 +83,7 @@
             }*/
           ], // the list of all the participant of the conversation. `name` is the user name, `id` is used to establish the author of a message, `imageUrl` is supposed to be the user avatar.
           title: "Sophie Pétoncule chez le psychologue",
-          titleImageUrl: '/images/sophie.jpg',
+          titleImageUrl: 'images/sophie.jpg',
           messageList: [],
           newMessagesCount: 0,
           isChatOpen: true, // to determine whether the chat window should be open or closed
