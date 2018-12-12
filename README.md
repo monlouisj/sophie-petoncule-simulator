@@ -1,5 +1,7 @@
 # Sophie Pétoncule Simulator
 
+https://monlouisj.github.io/sophie-petoncule-simulator/
+
 > The most important breakthrough in AI since Deep Blue :)
 
 > Sophie Pétoncule est une poule d'eau, une fois de plus, elle s'est noyée dans un verre d'eau.
