@@ -4,13 +4,11 @@
     <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title><%= htmlWebpackPlugin.options.title %></title>
-
-    
-
-    <% if (htmlWebpackPlugin.options.description) { %>
-    <meta name="description" content="<%= htmlWebpackPlugin.options.description %>"/>
-    <% } %>
+    <title>Sophie Pétoncule Simulator</title>
+    <meta property="og:title" content="Sophie Pétoncule Simulator" />
+    <meta name="description" content="Sophie Pétoncule est une poule d'eau, une fois de plus, elle s'est noyée dans un verre d'eau."/>
+    <meta property="og:description" content="Sophie Pétoncule est une poule d'eau, une fois de plus, elle s'est noyée dans un verre d'eau."/>
+    <meta property="og:image" content="images/sophie.jpg" />
 
     <% for (var chunk of webpack.chunks) {
         for (var file of chunk.files) {

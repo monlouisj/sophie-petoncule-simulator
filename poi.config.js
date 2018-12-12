@@ -7,6 +7,7 @@ module.exports = {
     'src/index.js'
   ],
   dist: 'docs',
+  homepage: "/sophie-petoncule-simulator",
   html: {
     title: pkg.productName,
     description: pkg.description,
